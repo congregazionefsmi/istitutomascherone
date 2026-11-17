@@ -1,0 +1,179 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Compendio di Preghiere</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="manifest" href="manifest.webmanifest">
+
+    <meta name="theme-color" content="#4aaee8">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Preghiera">
+</head>
+
+<body>
+    <main class="home">
+        <br>
+
+        <section class="home-hero">
+            <img src="images/logo.png" alt="Logo SHMI">
+
+            <div class="hero-text">
+                <h1>Compendio di Preghiere</h1>
+
+                <p class="subtitle">
+                    <em>«L’anima che ama Dio cerca continuamente
+                    di unirsi a Lui nella preghiera.»</em>
+                    <br>
+                    -Venerabile Giuseppe Frassinetti
+                </p>
+            </div>
+        </section>
+
+        <section class="app-grid">
+            <a href="angelus.html">
+                <span>👼🏼</span>
+                <h3>Angelus</h3>
+                <p>Angelus, Regina Coeli</p>
+            </a>
+
+            <a href="morning-prayer.html">
+                <span>☀</span>
+                <h3>Mattino</h3>
+                <p>Invitatorio, Lodi</p>
+            </a>
+
+            <a href="sesta-nona.html">
+                <span>🌤️</span>
+                <h3>L'ora media</h3>
+                <p>Sesta, Nona</p>
+            </a>
+
+            <a href="rosary.html">
+                <span>📿</span>
+                <h3>Rosario</h3>
+                <p>Misteri, Intenzioni</p>
+            </a>
+
+            <a href="mass-guide.html">
+                <span>✝</span>
+                <h3>Santa Messa</h3>
+                <p>Guida</p>
+            </a>
+
+            <a href="evening-prayer.html">
+                <span>🌅</span>
+                <h3>Sera</h3>
+                <p>Vespri, Magnificat</p>
+            </a>
+
+            <a href="adoration.html">
+                <span>🕯</span>
+                <h3>Adorazione</h3>
+                <p>Le Laudes Divine</p>
+            </a>
+
+            <a href="night-prayer.html">
+                <span>🌙</span>
+                <h3>Notte</h3>
+                <p>Intercessione</p>
+            </a>
+
+            <a href="basic-prayers.html">
+                <span>🙏</span>
+                <h3>Comune</h3>
+                <p>Segno della Croce</p>
+            </a>
+
+            <a href="devotions.html">
+                <span>✝️</span>
+                <h3>Devozione</h3>
+                <p>S. Spirito, Nazareno</p>
+            </a>
+
+            <a href="songbook.html" class="wide-card">
+                <span>🎶</span>
+                <h3>Canti</h3>
+                <p>Libretto PDF fsmi</p>
+            </a>
+
+            <a href="costituzioni.html">
+                <span>📜</span>
+                <h3>Costituzioni</h3>
+                <p>Regola di Vita</p>
+            </a>
+
+            <a href="direttorio.html">
+                <span>📘</span>
+                <h3>Direttorio</h3>
+                <p>Direttorio FSMI</p>
+            </a>
+
+            <a href="religiosi.html">
+                <span>👥</span>
+                <h3>I Religiosi</h3>
+                <p>Elenco Fratelli</p>
+            </a>
+
+            <a href="about.html">
+                <span>ℹ️</span>
+                <h3>About</h3>
+                <p>Informazioni App</p>
+            </a>
+        </section>
+    </main>
+
+    <footer>
+        <p class="subtitle">
+            Seminaristi dei Figli di Santa Maria Immacolata<br>
+            Porto Fiumicino • 2026
+        </p>
+    </footer>
+
+    <!-- CACHE MANAGER LINK: BROWSER / PWA ONLY -->
+    <div id="cacheManagerLink" hidden
+         style="text-align:center; padding: 10px 0 20px;">
+
+        <a href="cache-manager.html"
+           style="
+               color: #1683c6;
+               font-family: Georgia, 'Times New Roman', serif;
+               font-size: 13px;
+               text-decoration: none;
+               opacity: 0.8;
+           ">
+            ⚙ Gestione Cache
+        </a>
+
+    </div>
+
+    <!-- SHOW CACHE MANAGER ONLY OUTSIDE CORDOVA -->
+    <script>
+        (() => {
+            const link = document.getElementById("cacheManagerLink");
+
+            function updateCacheManagerVisibility() {
+                link.hidden = !!window.cordova;
+            }
+
+            updateCacheManagerVisibility();
+
+            document.addEventListener(
+                "deviceready",
+                updateCacheManagerVisibility,
+                false
+            );
+        })();
+    </script>
+
+
+
+    <script src="js/app.js"></script>
+
+</body>
+</html>

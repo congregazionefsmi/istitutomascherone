@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#4AAEE8">
+  <title>Guitar Tuner</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/guitar-tuner.css">
+</head>
+<body>
+  <main class="tuner-page">
+    <section class="tuner-card" aria-label="Guitar tuner">
+      <div class="note-display" aria-live="polite">
+        <div id="detected-note" class="detected-note">—</div>
+        <div id="detected-octave" class="detected-octave">Play a string</div>
+        <div id="detected-frequency" class="detected-frequency">-- Hz</div>
+      </div>
+
+      <div class="tuning-meter" aria-label="Tuning accuracy">
+        <div class="meter-labels"><span>♭</span><span>IN TUNE</span><span>♯</span></div>
+        <div class="meter-track">
+          <div class="meter-center"></div>
+          <div id="meter-indicator" class="meter-indicator"></div>
+        </div>
+      </div>
+
+      <div id="tuning-status" class="tuning-status">Ready</div>
+      <div id="cents-display" class="cents-display">Start the tuner to begin</div>
+      <div id="microphone-status" class="microphone-status" role="status" aria-live="polite">Microphone is off</div>
+      <button id="start-button" class="start-button" type="button">Start Tuner</button>
+
+      <section class="strings-section" aria-label="Guitar strings">
+        <div id="tuning-mode-controls" class="tuning-mode-buttons" aria-label="Tuning mode"></div>
+        <div class="strings-grid">
+          <button class="string-button" type="button" data-note="E2" data-frequency="82.41" aria-label="Select low E, E2"><span class="string-note">E</span><span class="string-octave">2</span></button>
+          <button class="string-button" type="button" data-note="A2" data-frequency="110.00" aria-label="Select A, A2"><span class="string-note">A</span><span class="string-octave">2</span></button>
+          <button class="string-button" type="button" data-note="D3" data-frequency="146.83" aria-label="Select D, D3"><span class="string-note">D</span><span class="string-octave">3</span></button>
+          <button class="string-button" type="button" data-note="G3" data-frequency="196.00" aria-label="Select G, G3"><span class="string-note">G</span><span class="string-octave">3</span></button>
+          <button class="string-button" type="button" data-note="B3" data-frequency="246.94" aria-label="Select B, B3"><span class="string-note">B</span><span class="string-octave">3</span></button>
+          <button class="string-button" type="button" data-note="E4" data-frequency="329.63" aria-label="Select high E, E4"><span class="string-note">E</span><span class="string-octave">4</span></button>
+        </div>
+      </section>
+    </section>
+  </main>
+  <script src="js/guitar-tuner.js" defer></script>
+</body>
+</html>

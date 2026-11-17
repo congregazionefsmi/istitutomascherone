@@ -1,0 +1,397 @@
+
+# CELL 1: Install Node.js 20, Java 17, Modern Gradle 8.14.2 & Android SDK 36
+import os
+import shutil
+
+print("📦 Installing Java 17, Node.js 20, Gradle 8.14.2, and Android SDK 36...")
+!apt-get update -qq
+!apt-get install -y -qq curl unzip wget openjdk-17-jdk > /dev/null
+
+# Set JAVA_HOME explicitly to Java 17
+os.environ["JAVA_HOME"] = "/usr/lib/jvm/java-17-openjdk-amd64"
+os.environ["PATH"] = os.environ["JAVA_HOME"] + "/bin:" + os.environ["PATH"]
+
+# Install modern Node.js 20 LTS via NodeSource
+!curl -fsSL https://deb.nodesource.com/setup_20.x | bash - > /dev/null 2>&1
+!apt-get install -y -qq nodejs > /dev/null
+
+# Install Cordova globally
+!npm install -g cordova > /dev/null
+
+# Cleanly install Gradle 8.14.2 (Required for cordova-android 15+)
+if os.path.exists("/content/gradle"):
+    shutil.rmtree("/content/gradle")
+if os.path.exists("/content/gradle-8.14.2"):
+    shutil.rmtree("/content/gradle-8.14.2")
+
+!wget -q https://services.gradle.org/distributions/gradle-8.14.2-bin.zip -O /content/gradle.zip
+!unzip -q /content/gradle.zip -d /content/
+!mv /content/gradle-8.14.2 /content/gradle
+!rm -f /content/gradle.zip
+
+# Set up Android SDK environment inside Colab
+os.environ["ANDROID_HOME"] = "/content/android-sdk"
+os.makedirs(os.environ["ANDROID_HOME"], exist_ok=True)
+
+if os.path.exists("/content/android-sdk/cmdline-tools"):
+    shutil.rmtree("/content/android-sdk/cmdline-tools")
+
+# Download and set up Android Command Line Tools
+!wget -q https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O /content/cmdtools.zip
+!unzip -q /content/cmdtools.zip -d /content/temp_tools
+!mkdir -p /content/android-sdk/cmdline-tools/latest
+!mv /content/temp_tools/cmdline-tools/* /content/android-sdk/cmdline-tools/latest/
+!rm -rf /content/cmdtools.zip /content/temp_tools
+
+# Configure PATH with Gradle and Android SDK tools
+os.environ["PATH"] = (
+    "/content/gradle/bin:"
+    + "/content/android-sdk/cmdline-tools/latest/bin:"
+    + "/content/android-sdk/platform-tools:"
+    + os.environ["PATH"]
+)
+
+# Accept Android SDK licenses and install SDK 36 components
+!yes | sdkmanager --sdk_root=/content/android-sdk --licenses > /dev/null 2>&1
+!sdkmanager --sdk_root=/content/android-sdk "platform-tools" "platforms;android-36" "build-tools;36.0.0" > /dev/null
+
+print("\n✓ Environment successfully configured with Android SDK 36 and Gradle 8.14.2!")
+print("• Node version:")
+!node -v
+print("• Java version:")
+!java -version
+print("• Gradle version:")
+!gradle -v
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# CELL 2: Read app-config.json, Configure Project, Link SDK, Inject cordova.js, Verify XMLs & Build APK
+
+import os
+import json
+import shutil
+import xml.etree.ElementTree as ET
+
+# ==========================================
+# ⚙️ CONFIGURATION: Change this to ANY repository URL!
+# ==========================================
+GITHUB_REPO_URL = "https://github.com/congregazionefsmi/compendio.git"
+
+# Ensure all environment variables (Java, Gradle, Android SDK) are fully active
+os.environ["JAVA_HOME"] = "/usr/lib/jvm/java-17-openjdk-amd64"
+os.environ["ANDROID_HOME"] = "/content/android-sdk"
+os.environ["PATH"] = (
+    "/content/gradle/bin:"
+    + "/content/android-sdk/cmdline-tools/latest/bin:"
+    + "/content/android-sdk/platform-tools:"
+    + os.environ["JAVA_HOME"] + "/bin:"
+    + os.environ["PATH"]
+)
+
+# 1. Extract Repository Name & Clone
+%cd /content
+REPO_NAME = GITHUB_REPO_URL.split("/")[-1].replace(".git", "")
+PROJECT_DIR_NAME = f"{REPO_NAME}_App"
+
+!rm -rf {REPO_NAME}
+print(f"📥 Cloning GitHub repository: {GITHUB_REPO_URL}...")
+!git clone {GITHUB_REPO_URL}
+
+# 2. Read app-config.json from the cloned repo
+config_path = f"/content/{REPO_NAME}/app-config.json"
+if not os.path.exists(config_path):
+    raise FileNotFoundError(f"❌ Could not find app-config.json in {REPO_NAME}!")
+
+with open(config_path, "r") as f:
+    config = json.load(f)
+
+APP_NAME = config.get("appName", "MyCordovaApp")
+PACKAGE_NAME = config.get("packageName", "com.example.app")
+STATUS_BAR_COLOR = config.get("statusBarColor", "#3498db")
+ICON_PATH = config.get("iconPath", "icons/app-icon.png")
+SPLASH_IMAGE_PATH = config.get("splashImagePath", "icons/logo.png")
+SPLASH_BG = config.get("splashBackgroundColor", "#ffffff")
+MIC_PERMISSION = config.get("microphonePermission", True)
+
+print(f"\n--- Applied Configuration from {REPO_NAME}/app-config.json ---")
+print(f"• App Name: {APP_NAME}")
+print(f"• Package Name: {PACKAGE_NAME}")
+print(f"• Status Bar Color: {STATUS_BAR_COLOR}")
+print(f"• App Icon Path: {ICON_PATH}")
+print(f"• Splash Image Path: {SPLASH_IMAGE_PATH}")
+print(f"• Splash Background: {SPLASH_BG}")
+print(f"• Microphone Permission: {MIC_PERMISSION}")
+print("---------------------------------------------------\n")
+
+# 3. Create Cordova Project & Copy Web Files
+%cd /content
+!rm -rf {PROJECT_DIR_NAME}
+!cordova create {PROJECT_DIR_NAME} "{PACKAGE_NAME}" "{APP_NAME}"
+!cp -r /content/{REPO_NAME}/* /content/{PROJECT_DIR_NAME}/www/
+
+# Clean up non-web files from www folder
+for unwanted in ['.git', 'app-config.json', 'README.md']:
+    unwanted_path = os.path.join(f"/content/{PROJECT_DIR_NAME}/www", unwanted)
+    if os.path.exists(unwanted_path):
+        if os.path.isdir(unwanted_path):
+            shutil.rmtree(unwanted_path)
+        else:
+            os.remove(unwanted_path)
+
+# ==========================================
+# 💉 AUTOMATICALLY INJECT cordova.js INTO ALL HTML FILES
+# ==========================================
+www_dir = f"/content/{PROJECT_DIR_NAME}/www"
+injected_count = 0
+
+for root, dirs, files in os.walk(www_dir):
+    for file in files:
+        if file.endswith(".html"):
+            html_path = os.path.join(root, file)
+            with open(html_path, "r", encoding="utf-8") as f:
+                html_content = f.read()
+
+            # Inject only if cordova.js isn't already present
+            if "cordova.js" not in html_content:
+                if "<head>" in html_content:
+                    html_content = html_content.replace("<head>", "<head>\n    <script src=\"cordova.js\"></script>")
+                elif "<HEAD>" in html_content:
+                    html_content = html_content.replace("<HEAD>", "<HEAD>\n    <script src=\"cordova.js\"></script>")
+                else:
+                    html_content = "<script src=\"cordova.js\"></script>\n" + html_content
+
+                with open(html_path, "w", encoding="utf-8") as f:
+                    f.write(html_content)
+                injected_count += 1
+                print(f"  [INJECTED] cordova.js added to: {file}")
+
+print(f"✓ Successfully injected cordova.js into {injected_count} HTML file(s)!\n")
+
+# 4. Configure config.xml with App Icon, Splash, Status Bar, and Expanded Native Allow-Intents
+%cd /content/{PROJECT_DIR_NAME}
+config_xml_path = f"/content/{PROJECT_DIR_NAME}/config.xml"
+if os.path.exists(config_xml_path):
+    with open(config_xml_path, "r") as f:
+        content = f.read()
+
+    custom_config = f"""
+    <icon src="www/{ICON_PATH}" />
+    <preference name="StatusBarBackgroundColor" value="{STATUS_BAR_COLOR}" />
+    <preference name="BackgroundColor" value="{SPLASH_BG}" />
+    <preference name="SplashScreen" value="screen" />
+    <preference name="SplashScreenDelay" value="3000" />
+    <preference name="FadeSplashScreen" value="true" />
+    <preference name="FadeSplashScreenDuration" value="300" />
+    <preference name="SplashMaintainAspectRatio" value="true" />
+
+    <!-- Expanded Native OS Handlers & Local File Navigation -->
+    <allow-intent href="tel:*" />
+    <allow-intent href="mailto:*" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <allow-intent href="file://*/*" />
+    <allow-intent href="content://*/*" />
+    <allow-navigation href="*" />
+
+    <platform name="android">
+        <preference name="AndroidWindowSplashScreenAnimatedIcon" value="www/{SPLASH_IMAGE_PATH}" />
+        <preference name="AndroidWindowSplashScreenBackground" value="{SPLASH_BG}" />
+    </platform>
+    """
+    content = content.replace("</widget>", f"{custom_config}\n</widget>")
+    with open(config_xml_path, "w") as f:
+        f.write(content)
+    print("✓ Configuration rules injected into config.xml!")
+
+# 5. Add Android Platform & Required Native Plugins (Restored file-opener2)
+!cordova platform add android
+!cordova plugin add cordova-plugin-statusbar
+!cordova plugin add cordova-plugin-file
+!cordova plugin add cordova-plugin-file-opener2
+!cordova plugin add cordova-plugin-inappbrowser
+
+# 6. Write local.properties to guarantee Gradle finds the Android SDK
+local_prop_path = f"/content/{PROJECT_DIR_NAME}/platforms/android/local.properties"
+with open(local_prop_path, "w") as f:
+    f.write("sdk.dir=/content/android-sdk\n")
+print("✓ Successfully linked Android SDK via local.properties!")
+
+# 7. Place dedicated Splash PNG and create splash screen wrapper
+res_drawable_dir = f"/content/{PROJECT_DIR_NAME}/platforms/android/app/src/main/res/drawable"
+os.makedirs(res_drawable_dir, exist_ok=True)
+
+source_splash_path = os.path.join(f"/content/{PROJECT_DIR_NAME}/www", SPLASH_IMAGE_PATH)
+dest_png_path = os.path.join(res_drawable_dir, "splash_logo.png")
+
+if os.path.exists(source_splash_path):
+    shutil.copy(source_splash_path, dest_png_path)
+    print(f"✓ Copied dedicated splash image from {SPLASH_IMAGE_PATH}")
+else:
+    print(f"⚠️ Warning: Splash image not found at {source_splash_path}!")
+
+splash_xml_content = """<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:left="48dp" android:right="48dp" android:top="48dp" android:bottom="48dp" android:gravity="center">
+        <bitmap android:src="@drawable/splash_logo" android:gravity="center" />
+    </item>
+</layer-list>
+"""
+with open(os.path.join(res_drawable_dir, "splash_icon.xml"), "w") as f:
+    f.write(splash_xml_content)
+
+# 8. Create provider_paths.xml and inject FileProvider into AndroidManifest.xml
+res_xml_dir = f"/content/{PROJECT_DIR_NAME}/platforms/android/app/src/main/res/xml"
+os.makedirs(res_xml_dir, exist_ok=True)
+
+provider_paths_content = """<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <files-path name="internal_files" path="." />
+    <cache-path name="internal_cache" path="." />
+    <external-path name="external_files" path="." />
+    <external-cache-path name="external_cache" path="." />
+    <root-path name="storage_root" path="." />
+</paths>
+"""
+with open(os.path.join(res_xml_dir, "provider_paths.xml"), "w") as f:
+    f.write(provider_paths_content)
+
+manifest_path = f"/content/{PROJECT_DIR_NAME}/platforms/android/app/src/main/AndroidManifest.xml"
+if os.path.exists(manifest_path):
+    tree = ET.parse(manifest_path)
+    root = tree.getroot()
+    android_ns = "http://schemas.android.com/apk/res/android"
+    ET.register_namespace("android", android_ns)
+
+    if MIC_PERMISSION:
+        for perm in ["android.permission.RECORD_AUDIO", "android.permission.MODIFY_AUDIO_SETTINGS"]:
+            p = ET.SubElement(root, "uses-permission")
+            p.set("{" + android_ns + "}name", perm)
+
+    application_elem = root.find("application")
+    if application_elem is not None:
+        application_elem.set("{" + android_ns + "}enableOnBackInvokedCallback", "false")
+
+        # Inject FileProvider required by cordova-plugin-file-opener2
+        provider = ET.SubElement(application_elem, "provider")
+        provider.set("{" + android_ns + "}name", "androidx.core.content.FileProvider")
+        provider.set("{" + android_ns + "}authorities", f"{PACKAGE_NAME}.provider")
+        provider.set("{" + android_ns + "}exported", "false")
+        provider.set("{" + android_ns + "}grantUriPermissions", "true")
+
+        meta_data = ET.SubElement(provider, "meta-data")
+        meta_data.set("{" + android_ns + "}name", "android.support.FILE_PROVIDER_PATHS")
+        meta_data.set("{" + android_ns + "}resource", "@xml/provider_paths")
+
+    tree.write(manifest_path, encoding="utf-8", xml_declaration=True)
+    print("✓ Manifest & FileProvider successfully injected!")
+
+# ==========================================
+# 🔍 VERIFICATION STEP: PRINT XML CONFIGURATIONS
+# ==========================================
+print("\n==========================================")
+print("🔍 VERIFYING GENERATED XML CONFIGURATIONS")
+print("==========================================")
+
+print("--- 1. Checking config.xml allow-intents ---")
+with open(config_xml_path, "r") as f:
+    cfg_txt = f.read()
+    for intent in ["file://*/*", "content://*/*", "http://*/*"]:
+        if intent in cfg_txt:
+            print(f"  [FOUND] Intent rule: {intent}")
+        else:
+            print(f"  [MISSING] Intent rule: {intent}")
+
+print("\n--- 2. Checking AndroidManifest.xml Provider ---")
+if os.path.exists(manifest_path):
+    with open(manifest_path, "r") as f:
+        man_txt = f.read()
+        if "androidx.core.content.FileProvider" in man_txt:
+            print("  [FOUND] FileProvider is registered in AndroidManifest.xml")
+        else:
+            print("  [MISSING] FileProvider NOT found in AndroidManifest.xml")
+        if f"{PACKAGE_NAME}.provider" in man_txt:
+            print(f"  [FOUND] Authority match: {PACKAGE_NAME}.provider")
+        else:
+            print("  [MISSING] Authority match NOT found")
+
+print("\n--- 3. Checking provider_paths.xml ---")
+prov_xml_file = os.path.join(res_xml_dir, "provider_paths.xml")
+if os.path.exists(prov_xml_file):
+    with open(prov_xml_file, "r") as f:
+        print("  [FOUND] provider_paths.xml exists. Content preview:")
+        print("  " + f.read().strip().replace("\n", "\n  "))
+else:
+    print("  [MISSING] provider_paths.xml does not exist!")
+print("==========================================\n")
+
+# 9. Compile APK with Gradle 8.14.2
+print(f"Building offline Android APK for {APP_NAME}...")
+!cordova build android --debug
+print("✓ APK build process completed successfully!")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# CELL 3: Download the Generated APK
+import glob
+from google.colab import files
+
+# Dynamically find the APK using the PROJECT_DIR_NAME variable from Cell 2
+apk_files = glob.glob(f"/content/{PROJECT_DIR_NAME}/platforms/android/app/build/outputs/apk/debug/*.apk")
+
+if apk_files:
+    print(f"📥 Downloading APK: {apk_files[0]}")
+    files.download(apk_files[0])
+else:
+    print("❌ No APK file found. Please check the build output logs above.")
+
+
+
+
+
+
+
+
+
+
+

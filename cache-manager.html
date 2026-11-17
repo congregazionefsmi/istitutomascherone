@@ -1,0 +1,370 @@
+
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#4AAEE8">
+
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <meta name="apple-mobile-web-app-status-bar-style"
+          content="default">
+
+    <meta name="apple-mobile-web-app-title"
+          content="Preghiera">
+
+    <title>Gestione Cache - Compendio</title>
+
+    <!-- PWA MANIFEST -->
+    <link rel="manifest" href="manifest.webmanifest">
+
+    <!-- CACHE MANAGER CSS -->
+    <link rel="stylesheet" href="css/cache-manager.css">
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="manager-header">
+
+        <a href="index.html" class="back-link">
+            ← Indietro
+        </a>
+
+        <h1>Gestione Cache</h1>
+
+        <p>Compendio di Preghiere</p>
+
+    </header>
+
+
+    <main class="manager-container">
+
+        <!-- ==================================
+             SERVICE WORKER STATUS
+        =================================== -->
+
+        <section class="manager-card">
+
+            <h2>Stato del sistema</h2>
+
+            <div class="status-row">
+                <span>Service Worker</span>
+                <strong id="workerStatus">
+                    Verifica in corso...
+                </strong>
+            </div>
+
+            <div class="status-row">
+                <span>Cache</span>
+                <strong id="cacheStatus">
+                    Non verificata
+                </strong>
+            </div>
+
+            <div class="status-row">
+                <span>File previsti</span>
+                <strong id="totalFiles">—</strong>
+            </div>
+
+        </section>
+
+
+        <!-- ==================================
+             PWA INSTALLATION
+        =================================== -->
+
+        <section class="manager-card">
+
+            <h2>Installazione Web App</h2>
+
+            <p>
+                Installa Compendio sul tuo dispositivo
+                per aprirlo come un'applicazione.
+            </p>
+
+            <button
+                id="installPwaButton"
+                class="manager-button primary"
+                type="button">
+
+                Install as Web App
+
+            </button>
+
+            <p
+                id="pwaMessage"
+                class="small-message"
+                aria-live="polite">
+
+                Controllo disponibilità installazione...
+
+            </p>
+
+        </section>
+
+
+        <!-- ==================================
+             OFFLINE INSTALLATION
+        =================================== -->
+
+        <section class="manager-card">
+
+            <h2>Installazione offline</h2>
+
+            <p>
+                Scarica tutti i file necessari per utilizzare
+                Compendio anche senza connessione Internet.
+            </p>
+
+            <button
+                id="installOfflineButton"
+                class="manager-button primary"
+                type="button">
+
+                Install Offline Files
+
+            </button>
+
+        </section>
+
+
+        <!-- ==================================
+             OPERATION PROGRESS
+        =================================== -->
+
+        <section class="manager-card">
+
+            <h2>Progresso operazione</h2>
+
+            <div class="progress-heading">
+
+                <strong id="progressTitle">
+                    In attesa
+                </strong>
+
+                <strong id="progressPercent">
+                    0%
+                </strong>
+
+            </div>
+
+            <div
+                class="progress-track"
+                role="progressbar"
+                aria-label="Progresso download"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow="0">
+
+                <div
+                    id="progressBar"
+                    class="progress-bar">
+                </div>
+
+            </div>
+
+            <div class="progress-details">
+
+                <span id="progressCount">
+                    0 / 0 file
+                </span>
+
+                <span id="progressPhase">
+                    Pronto
+                </span>
+
+            </div>
+
+            <p
+                id="currentFile"
+                class="current-file"
+                aria-live="polite">
+
+                Nessuna operazione in corso.
+
+            </p>
+
+            <p
+                id="operationMessage"
+                class="operation-message"
+                aria-live="polite">
+            </p>
+
+        </section>
+
+
+        <!-- ==================================
+             CACHE OPERATIONS
+        =================================== -->
+
+        <section class="manager-card">
+
+            <h2>Gestione della cache</h2>
+
+            <button
+                id="verifyButton"
+                class="manager-button secondary"
+                type="button">
+
+                Verify Cache
+
+            </button>
+
+            <button
+                id="fetchMissingButton"
+                class="manager-button secondary"
+                type="button">
+
+                Fetch Missing
+
+            </button>
+
+            <button
+                id="viewFilesButton"
+                class="manager-button secondary"
+                type="button">
+
+                View Files
+
+            </button>
+
+            <button
+                id="rebuildButton"
+                class="manager-button danger"
+                type="button">
+
+                Clear Cache &amp; Fetch All
+
+            </button>
+
+        </section>
+
+
+        <!-- ==================================
+             CACHE SUMMARY
+        =================================== -->
+
+        <section class="manager-card">
+
+            <h2>Riepilogo file</h2>
+
+            <div class="summary-grid">
+
+                <div class="summary-item">
+
+                    <strong id="cachedCount">—</strong>
+
+                    <span>Cached</span>
+
+                </div>
+
+                <div class="summary-item">
+
+                    <strong id="missingCount">—</strong>
+
+                    <span>Missing</span>
+
+                </div>
+
+                <div class="summary-item">
+
+                    <strong id="failedCount">0</strong>
+
+                    <span>Failed</span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================
+             FILE LIST
+        =================================== -->
+
+        <section
+            id="fileListSection"
+            class="manager-card"
+            hidden>
+
+            <h2>Elenco dei file</h2>
+
+            <div class="file-list-controls">
+
+                <button
+                    id="showAllFiles"
+                    class="filter-button active"
+                    type="button">
+
+                    All
+
+                </button>
+
+                <button
+                    id="showCachedFiles"
+                    class="filter-button"
+                    type="button">
+
+                    Cached
+
+                </button>
+
+                <button
+                    id="showMissingFiles"
+                    class="filter-button"
+                    type="button">
+
+                    Missing
+
+                </button>
+
+            </div>
+
+            <div
+                id="fileList"
+                class="file-list">
+            </div>
+
+        </section>
+
+
+        <!-- ==================================
+             ERRORS
+        =================================== -->
+
+        <section
+            id="errorSection"
+            class="manager-card error-card"
+            hidden>
+
+            <h2>Errors</h2>
+
+            <div id="errorList"></div>
+
+        </section>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer class="manager-footer">
+
+        Compendio di Preghiere
+
+    </footer>
+
+
+    <!-- CACHE MANAGER JAVASCRIPT -->
+    <script src="js/cache-manager.js"></script>
+
+</body>
+</html>

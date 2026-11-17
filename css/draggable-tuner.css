@@ -1,0 +1,44 @@
+/* ==========================================
+   Floating & Draggable Guitar Tuner Button
+   ========================================== */
+
+.floating-tuner,
+.floating-menu-wrapper {
+    touch-action: none; /* Prevents page scrolling while dragging on touch devices */
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.floating-tuner {
+    position: fixed;
+    right: 16px;
+    bottom: 20px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    background: #176a9b;
+    border-radius: 50%;
+    box-shadow: 0 4px 16px rgba(23, 106, 155, 0.35);
+}
+
+.floating-tuner svg {
+    width: 26px;
+    height: 26px;
+    pointer-events: none;
+}
+
+@media (min-width: 601px) {
+    .floating-tuner { 
+        right: 24px; 
+        bottom: 28px; 
+        width: 56px; 
+        height: 56px; 
+    }
+    .floating-tuner svg { 
+        width: 30px; 
+        height: 30px; 
+    }
+}

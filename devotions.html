@@ -1,0 +1,676 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devozioni</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="manifest" href="manifest.webmanifest">
+
+    <style>
+        /* =========================================
+           DEVOTION PAGE WRAPPER
+        ========================================= */
+
+        .devotion-page {
+            display: block !important;
+            width: 100% !important;
+            max-width: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            box-sizing: border-box !important;
+        }
+
+        .devotion-page > .prayer-search,
+        .devotion-page > main {
+            box-sizing: border-box !important;
+        }
+
+        .devotion-page > main {
+            display: block !important;
+            width: 100% !important;
+            max-width: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        /* =========================================
+           SEARCH
+        ========================================= */
+
+        .devotion-page .prayer-search {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 12px 12px 18px;
+            padding: 10px 14px;
+            width: auto;
+            background: #fff;
+            border: 1px solid #e4edf3;
+            border-radius: 12px;
+            box-sizing: border-box;
+        }
+
+        .devotion-page .prayer-search-icon {
+            color: #1683c6;
+            font-size: 21px;
+        }
+
+        .devotion-page .prayer-search input {
+            width: 100%;
+            min-width: 0;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 15px;
+            color: #333;
+        }
+
+        /* =========================================
+           PRAYER CARDS
+        ========================================= */
+
+        .devotion-page .prayer-card {
+            margin: 0 12px 12px;
+            width: auto;
+            background: #fff;
+            border: 1px solid #e4edf3;
+            border-radius: 12px;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .devotion-page .prayer-card > summary {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            cursor: pointer;
+            list-style: none;
+        }
+
+        .devotion-page .prayer-card > summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .devotion-page .prayer-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            border-radius: 10px;
+            background: #eaf6ff;
+            color: #1683c6;
+            font-size: 19px;
+        }
+
+        .devotion-page .prayer-info {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .devotion-page .prayer-title {
+            color: #263746;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .devotion-page .prayer-subtitle {
+            color: #8495a2;
+            font-size: 12px;
+        }
+
+        .devotion-page .prayer-content {
+            padding: 5px 12px 10px;
+            border-top: 1px solid #edf3f7;
+        }
+
+        /* =========================================
+           PRAYER TEXT
+        ========================================= */
+
+        .devotion-page .prayer {
+            line-height: 1.35;
+            text-align: left;
+            padding: 0;
+            margin: 0 0 12px;
+        }
+
+        .devotion-page .prayer:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Blue responses */
+        .devotion-page .response {
+            color: #1683c6;
+            font-weight: 700;
+            font-style: normal;
+            text-align: left;
+        }
+
+        /* Coroncina expandable sections */
+        .devotion-page .compactsummary {
+            margin: 0 0 12px;
+        }
+
+        .devotion-page .compactsummary details {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            border-bottom: 1px solid #edf1f4;
+        }
+
+        .devotion-page .compactsummary details:last-child {
+            border-bottom: none;
+        }
+
+        .devotion-page .compactsummary summary {
+            display: block;
+            padding: 11px 2px;
+            color: #263746;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            list-style: none;
+        }
+
+        .devotion-page .compactsummary summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .devotion-page .compactsummary summary::marker {
+            content: "";
+        }
+
+        .devotion-page .compactsummary details[open] > summary {
+            color: #1683c6;
+        }
+
+        .devotion-page .compactsummary .prayer {
+            padding: 0 2px 10px;
+            margin: 0;
+            text-align: justify;
+        }
+
+        /* Centered prayers */
+        .devotion-page .centered-prayer .prayer {
+            text-align: center;
+        }
+
+        /* Justified prayers */
+        .devotion-page .justified-prayer .prayer {
+            text-align: justify;
+        }
+
+        /* =========================================
+           DIVINE MERCY RUBRICS
+        ========================================= */
+
+        .devotion-page .mercy-rubric {
+            color: #b83232;
+            font-size: 13px;
+            font-style: italic;
+            font-weight: 600;
+            line-height: 1.35;
+            margin: 14px 0 8px;
+        }
+
+        /* Preghiamo */
+        .devotion-page .mercy-heading {
+            color: #263746;
+            font-size: inherit;
+            font-style: normal;
+            font-weight: 700;
+            line-height: 1;
+            margin: 16px 0 8px;
+        }
+
+        /* Opening invocation: blue, bold and justified */
+        .devotion-page .mercy-opening {
+    color: #1683c6;
+    font-weight: 700;
+    font-style: normal;
+    text-align: justify;
+    line-height: 1.35;
+    margin: 0 0 16px;
+    padding: 0;
+}
+
+        /* Final invocations: blue and bold */
+        .devotion-page .mercy-invocation {
+            color: #1683c6;
+            font-weight: 700;
+            font-style: normal;
+            margin: 16px 0;
+        }
+
+        .devotion-page .mercy-attribution {
+            display: block;
+            text-align: right;
+            color: #8495a2;
+            font-size: 13px;
+            font-style: italic;
+            margin-top: 8px;
+        }
+
+        /* =========================================
+           DIVINE MERCY CONTINUOUS SEQUENCE
+        ========================================= */
+
+        .devotion-page .mercy-sequence {
+            display: block;
+            margin: 0;
+            padding: 0;
+        }
+
+        .devotion-page .mercy-sequence p {
+            margin: 0;
+            padding: 0;
+        }
+
+        .devotion-page .mercy-sequence .mercy-rubric {
+            color: #b83232;
+            font-size: 13px;
+            font-style: italic;
+            font-weight: 600;
+            line-height: 1.35;
+        }
+
+        .devotion-page .mercy-sequence .prayer {
+            text-align: justify;
+            line-height: 1.35;
+        }
+
+        /* Blue responses: no italics or justification */
+        .devotion-page .mercy-sequence .response {
+            color: #1683c6;
+            font-weight: 700;
+            font-style: normal;
+            text-align: left;
+            line-height: 1.35;
+        }
+
+        /* Deliberate space before the next section */
+        .devotion-page .mercy-sequence .space-before {
+            margin-top: 14px;
+        }
+
+        /* =========================================
+           SEARCH EMPTY STATE
+        ========================================= */
+
+        .devotion-page .no-results {
+            display: none;
+            text-align: center;
+            color: #8495a2;
+            padding: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body data-zoom="true">
+
+<div class="devotion-page">
+
+    <div class="prayer-search">
+        <span class="prayer-search-icon">⌕</span>
+        <input
+            type="search"
+            id="prayerSearch"
+            placeholder="Cerca una preghiera..."
+            autocomplete="off">
+    </div>
+
+    <main>
+
+        <!-- VIENI, SANTO SPIRITO -->
+        <details class="prayer-card">
+            <summary>
+                <span class="prayer-icon">🕊</span>
+                <span class="prayer-info">
+                    <span class="prayer-title">Vieni, Santo Spirito</span>
+                    <span class="prayer-subtitle">Inno allo Spirito Santo</span>
+                </span>
+            </summary>
+
+            <div class="prayer-content centered-prayer">
+                <p class="prayer">
+                    Vieni, Santo Spirito<br>
+                    manda a noi dal cielo<br>
+                    un raggio della tua luce.
+                </p>
+
+                <p class="prayer">
+                    Vieni, padre dei poveri<br>
+                    vieni, datore dei doni<br>
+                    vieni, luce dei cuori.
+                </p>
+
+                <p class="prayer">
+                    Consolatore perfetto<br>
+                    ospite dolce dell'anima<br>
+                    dolcissimo sollievo.
+                </p>
+
+                <p class="prayer">
+                    Nella fatica, riposo<br>
+                    nella calura, riparo<br>
+                    nel pianto, conforto.
+                </p>
+
+                <p class="prayer">
+                    O luce beatissima<br>
+                    invadi nell'intimo<br>
+                    il cuore dei tuoi fedeli.
+                </p>
+
+                <p class="prayer">
+                    Senza la tua forza<br>
+                    nulla è nell'uomo<br>
+                    nulla senza colpa.
+                </p>
+
+                <p class="prayer">
+                    Lava ciò che è sordido<br>
+                    bagna ciò che è arido<br>
+                    sana ciò che sanguina.
+                </p>
+
+                <p class="prayer">
+                    Piega ciò che è rigido<br>
+                    scalda ciò che è gelido<br>
+                    raddrizza ciò ch'è sviato.
+                </p>
+
+                <p class="prayer">
+                    Dona ai tuoi fedeli<br>
+                    che solo in te confidano<br>
+                    i tuoi santi doni.
+                </p>
+
+                <p class="prayer">
+                    Dona virtù e premio<br>
+                    dona morte santa<br>
+                    dona gioia eterna. Amen.
+                </p>
+            </div>
+        </details>
+
+
+        <!-- CORONCINA ALLA DIVINA MISERICORDIA -->
+        <details class="prayer-card">
+            <summary>
+                <span class="prayer-icon">✝</span>
+                <span class="prayer-info">
+                    <span class="prayer-title">Coroncina alla Divina Misericordia</span>
+                    <span class="prayer-subtitle">Devozione</span>
+                </span>
+            </summary>
+
+            <div class="prayer-content justified-prayer">
+
+                <!-- SEGNO DELLA CROCE E INVOCAZIONE INIZIALE -->
+                <p class="prayer">
+                    Nel nome del Padre, del Figlio e dello Spirito Santo. Amen.
+                </p>
+
+                <p class="mercy-opening">
+                    Gesù, Tu sei appena morto e già una sorgente di vita è sgorgata
+                    per le anime. O sorgente di vita, incomprensibile misericordia
+                    di Dio, avvolgi il mondo intero e riversati su di noi.
+                    O Sangue ed Acqua che scaturisci dal Cuore di Gesù,
+                    come sorgente di misericordia per noi, confido in Te.
+                </p>
+
+                <!-- PADRE NOSTRO, AVE MARIA, CREDO -->
+                <div class="compactsummary">
+
+                    <details>
+                        <summary>1. Padre Nostro</summary>
+                        <p class="prayer">
+                            Padre nostro, che sei nei cieli, sia santificato il tuo nome,
+                            venga il tuo regno, sia fatta la tua volontà, come in cielo
+                            così in terra.
+                        </p>
+                        <p class="prayer">
+                            Dacci oggi il nostro pane quotidiano, e rimetti a noi i
+                            nostri debiti come anche noi li rimettiamo ai nostri
+                            debitori, e non abbandonarci alla tentazione, ma liberaci
+                            dal male. Amen.
+                        </p>
+                    </details>
+
+                    <details>
+                        <summary>2. Ave Maria</summary>
+                        <p class="prayer">
+                            Ave, o Maria, piena di grazia, il Signore è con te.
+                            Tu sei benedetta fra le donne e benedetto è il frutto
+                            del tuo seno, Gesù.
+                        </p>
+                        <p class="prayer">
+                            Santa Maria, Madre di Dio, prega per noi peccatori,
+                            adesso e nell'ora della nostra morte. Amen.
+                        </p>
+                    </details>
+
+                    <details>
+                        <summary>3. Credo</summary>
+                        <p class="prayer">
+                            Io credo in Dio, Padre onnipotente, creatore del cielo
+                            e della terra; e in Gesù Cristo, suo unico Figlio,
+                            nostro Signore, il quale fu concepito di Spirito Santo,
+                            nacque da Maria Vergine, patì sotto Ponzio Pilato,
+                            fu crocifisso, morì e fu sepolto.
+                        </p>
+                        <p class="prayer">
+                            Discese agli inferi; il terzo giorno risuscitò da morte;
+                            salì al cielo, siede alla destra di Dio Padre onnipotente:
+                            di là verrà a giudicare i vivi e i morti.
+                        </p>
+                        <p class="prayer">
+                            Credo nello Spirito Santo, la santa Chiesa cattolica,
+                            la comunione dei santi, la remissione dei peccati,
+                            la risurrezione della carne, la vita eterna. Amen.
+                        </p>
+                    </details>
+
+                </div>
+
+                <!-- CONTINUOUS DIVINE MERCY SEQUENCE -->
+                <div class="mercy-sequence">
+
+                    <p class="mercy-rubric">
+                        Sui grani del Padre Nostro:
+                    </p>
+
+                    <p class="prayer">
+                        Eterno Padre, io ti offro il Corpo e il Sangue, l'Anima e la
+                        Divinità del tuo dilettissimo Figlio e nostro Signore Gesù Cristo,
+                        in espiazione dei nostri peccati e di quelli del mondo intero.
+                    </p>
+
+                    <p class="mercy-rubric space-before">
+                        Sui grani dell'Ave Maria (10 volte):
+                    </p>
+
+                    <p class="prayer">
+                        Per la sua dolorosa Passione,
+                    </p>
+
+                    <p class="response">
+                        abbi misericordia di noi e del mondo intero.
+                    </p>
+
+                    <p class="mercy-rubric">
+                        Ripetere per cinque decine.
+                    </p>
+
+                    <p class="mercy-rubric space-before">
+                        Al termine delle cinque decine:
+                    </p>
+
+                    <p class="response">
+                        Santo Dio, Santo Forte, Santo Immortale,
+                        abbi pietà di noi e del mondo intero.
+                    </p>
+
+                    <p class="mercy-rubric">
+                        (3 volte)
+                    </p>
+
+                </div>
+
+                <!-- PREGHIERA FINALE -->
+                <p class="mercy-heading"><strong>Preghiamo</strong></p>
+
+                <p class="prayer">
+                    Dio, Padre Misericordioso, che hai rivelato il Tuo amore nel
+                    Figlio Tuo Gesù Cristo, e l'hai riversato su di noi nello
+                    Spirito Santo Consolatore, Ti affidiamo oggi i destini del
+                    mondo e di ogni uomo. Chinati su di noi peccatori, risana la
+                    nostra debolezza, sconfiggi ogni male, fa' che tutti gli
+                    abitanti della terra sperimentino la Tua Misericordia,
+                    affinché in Te, Dio Uno e Trino, trovino sempre la fonte
+                    della speranza. Eterno Padre, per la dolorosa Passione e la
+                    Resurrezione del Tuo Figlio, abbi misericordia di noi e del
+                    mondo intero. Amen.
+
+                    <span class="mercy-attribution">— Giovanni Paolo II</span>
+                </p>
+
+                <!-- INVOCAZIONI FINALI -->
+                <p class="mercy-invocation">
+                    O Sangue e Acqua, che scaturisti dal Cuore di Gesù
+                    come sorgente di misericordia per noi, confido in Te!
+                    <br><br>
+                    Gesù, confido in Te!
+                </p>
+
+            </div>
+        </details>
+
+
+        <!-- ANIMA DI CRISTO -->
+        <details class="prayer-card">
+            <summary>
+                <span class="prayer-icon">✝</span>
+                <span class="prayer-info">
+                    <span class="prayer-title">Anima di Cristo</span>
+                    <span class="prayer-subtitle">Preghiera tradizionale</span>
+                </span>
+            </summary>
+
+            <div class="prayer-content centered-prayer">
+                <p class="prayer">
+                    Anima di Cristo, santificami.<br>
+                    Corpo di Cristo, salvami.<br>
+                    Sangue di Cristo, inebriami.<br>
+                    Acqua del costato di Cristo, lavami.<br>
+                    Passione di Cristo, confortami.<br>
+                    O buon Gesù, esaudiscimi.<br>
+                    Dentro le tue piaghe nascondimi.<br>
+                    Non permettere che io mi separi da te.<br>
+                    Dal nemico maligno difendimi.<br>
+                    Nell'ora della morte chiamami.<br>
+                    E fa' che io venga a te,<br>
+                    per lodarti con i tuoi santi<br>
+                    nei secoli dei secoli.<br>
+                    Amen.
+                </p>
+            </div>
+        </details>
+
+
+        <!-- PREGHIERA A GESÙ NAZARENO -->
+        <details class="prayer-card">
+            <summary>
+                <span class="prayer-icon">✝</span>
+                <span class="prayer-info">
+                    <span class="prayer-title">Preghiera a Gesù Nazareno</span>
+                    <span class="prayer-subtitle">Preghiera di affidamento</span>
+                </span>
+            </summary>
+
+            <div class="prayer-content justified-prayer">
+                <p class="prayer">
+                    O Gesù Nazareno, mio dolce Redentore, mi prostro davanti a Te
+                    con il cuore colmo di pentimento e di fiducia. Guardo Te, che
+                    porti il peso della Croce per amore mio, e ti affido la mia vita.
+                </p>
+
+                <p class="prayer">
+                    Signore, Tu conosci le mie debolezze, le mie sofferenze e le
+                    croci quotidiane che gravano sulle mie spalle. Ti prego, donami
+                    la forza e la pazienza di portarle con fede, senza mai perdere
+                    la speranza nel Tuo amore misericordioso.
+                </p>
+
+                <p class="prayer">
+                    Gesù Nazareno, passa e guarisci le mie ferite. Allontana da me
+                    ogni male, proteggi la mia famiglia e dona pace al mio cuore
+                    inquieto.
+                </p>
+
+                <p class="prayer">
+                    Insegnami l'umiltà e l'obbedienza alla volontà del Padre,
+                    affinché io possa camminare sulle Tue orme ed essere un Tuo
+                    fedele discepolo.
+                </p>
+
+                <p class="prayer">
+                    Ascolta la mia umile preghiera (esprimere la grazia che si
+                    desidera richiedere) e custodiscimi sempre sotto la Tua
+                    santa protezione.
+                </p>
+
+                <p class="prayer">
+                    Amen.
+                </p>
+            </div>
+        </details>
+
+        <p id="noResults" class="no-results">
+            Nessuna preghiera trovata.
+        </p>
+
+    </main>
+
+</div>
+
+<script>
+    (() => {
+        const prayerSearch = document.getElementById("prayerSearch");
+        const prayerCards = document.querySelectorAll(".prayer-card");
+        const noResults = document.getElementById("noResults");
+
+        prayerSearch.addEventListener("input", function () {
+            const search = this.value.toLowerCase().trim();
+            let visibleCount = 0;
+
+            prayerCards.forEach(card => {
+                const title = card.querySelector(".prayer-info")
+                    .textContent.toLowerCase();
+
+                const match = title.includes(search);
+
+                card.hidden = !match;
+
+                if (match) visibleCount++;
+            });
+
+            noResults.style.display =
+                visibleCount === 0 ? "block" : "none";
+        });
+    })();
+</script>
+
+<script src="js/app.js"></script>
+
+</body>
+</html>

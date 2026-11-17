@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+    >
+    <meta name="theme-color" content="#4AAEE8">
+
+    <title>Canto</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body.pdf-song-viewer-page {
+            height: 100vh;
+            height: 100dvh;
+            background: #FFFFFF;
+            color: #222222;
+            font-family: Arial, sans-serif;
+        }
+
+        /* =========================================
+            PDF VIEWPORT (100% Fullscreen)
+        ========================================= */
+
+        .pdf-song-viewport {
+            display: block;
+            width: 100%;
+            height: 100vh;
+            height: 100dvh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #FFFFFF;
+        }
+
+        #pdfFrame {
+            display: block;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            border: none;
+            background: #FFFFFF;
+        }
+
+        /* =========================================
+            INDEPENDENT FLOATING TUNER & AUTO-FADE
+        ========================================= */
+
+        .floating-menu-wrapper {
+            position: fixed;
+            right: 16px;
+            bottom: 20px;
+            z-index: 9999;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-end;
+            transition: opacity 0.4s ease;
+            touch-action: none; /* Crucial for smooth touch dragging */
+            user-select: none;
+            cursor: grab;
+        }
+
+        .floating-menu-wrapper:active {
+            cursor: grabbing;
+        }
+
+        .floating-tuner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 52px;
+            height: 52px;
+            background: #176a9b;
+            border-radius: 50%;
+            box-shadow: 0 4px 16px rgba(23, 106, 155, 0.35);
+            text-decoration: none;
+        }
+
+        .floating-tuner svg {
+            display: block;
+            width: 26px;
+            height: 26px;
+            pointer-events: none; /* Ensures SVG doesn't interfere with pointer capture */
+        }
+
+        /* Inactivity Faded State */
+        .floating-menu-wrapper.is-faded {
+            opacity: 0.25;
+        }
+
+        .floating-menu-wrapper.is-faded:hover {
+            opacity: 1;
+        }
+
+        @media (min-width: 601px) {
+            .floating-menu-wrapper {
+                right: 24px;
+                bottom: 28px;
+            }
+            .floating-tuner {
+                width: 56px;
+                height: 56px;
+            }
+            .floating-tuner svg {
+                width: 30px;
+                height: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body class="pdf-song-viewer-page">
+
+    <!-- Fullscreen PDF Viewport -->
+    <main class="pdf-song-viewport">
+        <iframe
+            id="pdfFrame"
+            title="PDF del canto"
+            src="about:blank"
+        ></iframe>
+    </main>
+
+    <!-- Independent Floating Tuner Button Wrapper -->
+    <div id="floatingMusicMenu" class="floating-menu-wrapper">
+        <a
+            id="openTuner"
+            href="guitar-tuner.html"
+            class="floating-tuner"
+            aria-label="Apri accordatore"
+            title="Accordatore"
+        >
+            <svg
+                viewBox="0 0 100 100"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+                focusable="false"
+            >
+                <path
+                    d="M50 12 C36 12 17 22 18 39 C19 57 39 78 50 87 C61 78 81 57 82 39 C83 22 64 12 50 12Z"
+                    fill="#FFFFFF"
+                />
+                <path
+                    d="M39 37 V30 Q39 25 44 25 M61 37 V30 Q61 25 56 25 M39 37 V44 Q39 49 44 49 H56 Q61 49 61 44 V37 M50 49 V65"
+                    fill="none"
+                    stroke="#1683c6"
+                    stroke-width="4"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                />
+                <circle cx="50" cy="69" r="3" fill="#1683c6" />
+            </svg>
+        </a>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="js/app.js"></script>
+    <script src="js/pdf-songbook-viewer.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const menuWrapper = document.getElementById("floatingMusicMenu");
+            const tunerLink = document.getElementById("openTuner");
+            if (!menuWrapper) return;
+
+            let isDragging = false;
+            let startX = 0, startY = 0;
+            let initialLeft = 0, initialTop = 0;
+            let hasMoved = false;
+
+            // Auto-fade inactivity timer
+            let fadeTimeout;
+            function resetFadeTimer() {
+                clearTimeout(fadeTimeout);
+                menuWrapper.classList.remove("is-faded");
+                fadeTimeout = setTimeout(() => {
+                    menuWrapper.classList.add("is-faded");
+                }, 4000);
+            }
+
+            window.addEventListener("mousemove", resetFadeTimer);
+            window.addEventListener("touchstart", resetFadeTimer, { passive: true });
+            window.addEventListener("scroll", resetFadeTimer, { passive: true });
+            resetFadeTimer();
+
+            // Modern Pointer Events with Pointer Capture (solves iframe blocking completely)
+            menuWrapper.addEventListener("pointerdown", function (e) {
+                resetFadeTimer();
+                const rect = menuWrapper.getBoundingClientRect();
+
+                if (!menuWrapper.style.top) {
+                    menuWrapper.style.top = rect.top + "px";
+                    menuWrapper.style.left = rect.left + "px";
+                    menuWrapper.style.bottom = "auto";
+                    menuWrapper.style.right = "auto";
+                }
+
+                startX = e.clientX;
+                startY = e.clientY;
+                initialLeft = parseFloat(menuWrapper.style.left) || rect.left;
+                initialTop = parseFloat(menuWrapper.style.top) || rect.top;
+                isDragging = true;
+                hasMoved = false;
+
+                // Capture pointer so movement is tracked even over the iframe
+                menuWrapper.setPointerCapture(e.pointerId);
+            });
+
+            menuWrapper.addEventListener("pointermove", function (e) {
+                if (!isDragging) return;
+
+                const deltaX = e.clientX - startX;
+                const deltaY = e.clientY - startY;
+
+                if (Math.abs(deltaX) > 4 || Math.abs(deltaY) > 4) {
+                    hasMoved = true;
+                }
+
+                if (!hasMoved) return;
+
+                const rect = menuWrapper.getBoundingClientRect();
+                let newLeft = initialLeft + deltaX;
+                let newTop = initialTop + deltaY;
+
+                const maxLeft = window.innerWidth - rect.width;
+                const maxTop = window.innerHeight - rect.height;
+
+                newLeft = Math.max(0, Math.min(newLeft, maxLeft));
+                newTop = Math.max(0, Math.min(newTop, maxTop));
+
+                menuWrapper.style.left = newLeft + "px";
+                menuWrapper.style.top = newTop + "px";
+            });
+
+            function stopDragging(e) {
+                if (!isDragging) return;
+                isDragging = false;
+                try {
+                    menuWrapper.releasePointerCapture(e.pointerId);
+                } catch (err) {}
+            }
+
+            menuWrapper.addEventListener("pointerup", stopDragging);
+            menuWrapper.addEventListener("pointercancel", stopDragging);
+
+            // Prevent link click if the user was dragging the button
+            if (tunerLink) {
+                tunerLink.addEventListener("click", function (e) {
+                    if (hasMoved) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

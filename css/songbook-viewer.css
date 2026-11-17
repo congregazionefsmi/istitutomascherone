@@ -1,0 +1,190 @@
+/* =========================================
+   INDIVIDUAL SONG VIEWER
+   Fullscreen song viewport and direct floating tools
+========================================= */
+
+:root {
+    --viewer-blue: #4AAEE8;
+    --viewer-white: #FFFFFF;
+    --viewer-accent: #176A9B;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body.song-viewer-page {
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    background: #FFFFFF;
+    color: #222222;
+    font-family: Arial, sans-serif;
+}
+
+/* =========================================
+   SONG AREA (100% Fullscreen)
+========================================= */
+
+.song-viewer-page .song-viewport {
+    display: block;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: #FFFFFF;
+}
+
+.song-viewer-page .song-viewport iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: #FFFFFF;
+}
+
+/* =========================================
+   DIRECT FLOATING TOOLS BAR
+   Matches the position of the catalogue button
+========================================= */
+
+.floating-menu-wrapper {
+    position: fixed;
+    right: 16px;
+    bottom: 20px;
+    z-index: 1000;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    transition: opacity 0.4s ease;
+}
+
+/* Tools Bar Container */
+.floating-sub-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    background: #FFFFFF;
+    border: 1px solid #DCE8EF;
+    border-radius: 30px;
+    box-shadow: 0 4px 16px rgba(23, 106, 155, 0.25);
+    opacity: 1;
+    transform: scale(1);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Guitar Tuner Button in Bar */
+.floating-sub-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #176A9B;
+    text-decoration: none;
+    flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.2s;
+}
+
+.floating-sub-item:hover {
+    transform: scale(1.05);
+}
+
+.floating-sub-item svg {
+    width: 22px;
+    height: 22px;
+    display: block;
+}
+
+/* =========================================
+   TRANSPOSITION CONTROLS
+========================================= */
+
+.song-viewer-page .transpose-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.song-viewer-page .transpose-button,
+.song-viewer-page .transpose-value {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 34px;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: #F0F6FA;
+    color: var(--viewer-accent);
+    font-family: Arial, sans-serif;
+    line-height: 1;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.song-viewer-page .transpose-button {
+    width: 34px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.song-viewer-page .transpose-value {
+    width: 34px;
+    font-size: 14px;
+    font-weight: 700;
+    background: transparent;
+    font-variant-numeric: tabular-nums;
+}
+
+.song-viewer-page .transpose-button:active,
+.song-viewer-page .transpose-value:active {
+    background: #EAF6FF;
+}
+
+/* =========================================
+   INACTIVITY FADED STATE
+========================================= */
+
+.floating-menu-wrapper.is-faded {
+    opacity: 0.25;
+}
+
+.floating-menu-wrapper.is-faded:hover {
+    opacity: 1;
+}
+
+/* =========================================
+   DESKTOP EXPANSION
+========================================= */
+
+@media (min-width: 601px) {
+    .floating-menu-wrapper {
+        right: 24px;
+        bottom: 28px;
+    }
+}
+
+/* =========================================
+   CLEANUP UNUSED SELECTORS
+========================================= */
+
+#pageOverlayClose {
+    display: none !important;
+}
