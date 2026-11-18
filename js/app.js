@@ -160,35 +160,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 /* ==========================================================
-   PRAYER LANGUAGE / MYSTERY SWITCHER
-========================================== */
+   PRAYER LANGUAGE / MYSTERY SWITCHER (JS-ONLY FIX)
+========================================================== */
 
 function showPrayer(language, button) {
-
     const card = button.closest(".prayer-card");
     if (!card) return;
 
-    card.querySelectorAll(".prayer-language")
-        .forEach(section => {
+    // Detect if the user selected 'latino' or 'italiano'
+    const isLatino = language.includes("latino");
+    const targetLang = isLatino ? "latino" : "italiano";
+
+    // Loop through every language block inside the card (both Angelus and Regina Coeli)
+    card.querySelectorAll(".prayer-language").forEach(section => {
+        if (section.id.includes(targetLang)) {
+            section.style.display = "block";
+        } else {
             section.style.display = "none";
-        });
+        }
+    });
 
-    const selected = document.getElementById(language);
-    if (selected) {
-        selected.style.display = "block";
-    }
-
-    const menu = button.closest(".language-menu");
-    if (menu) {
-        menu.querySelectorAll("button")
-            .forEach(btn => {
-                btn.classList.remove("active");
-            });
-    }
-
-    button.classList.add("active");
-
+    // Keep the language buttons synced across both slides
+    card.querySelectorAll(".language-menu button").forEach(btn => {
+        const btnLang = btn.textContent.trim().toLowerCase();
+        if (btnLang === targetLang) {
+            btn.classList.add("active");
+        } else {
+            btn.classList.remove("active");
+        }
+    });
 }
+
+
 
 
 /* ==========================================================
