@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Adorazione Eucaristica</title>
+    <title>Sequenza dell'Adorazione al Santissimo e Preghiera dei Vespri</title>
 
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/overlay.css">
@@ -22,22 +22,33 @@
 <main>
 
 <!-- =========================
-     1. O SALUTARIS HOSTIA (Ingresso)
+     PAGE TITLE
+========================= -->
+<h1 class="center" style="margin: 20px 0; font-size: 1.6rem;">
+    Sequenza dell'Adorazione al Santissimo<br>e Preghiera dei Vespri
+</h1>
+
+<!-- =========================
+     I. ESPOSIZIONE DEL SANTISSIMO
 ========================= -->
 
 <section class="prayer-card">
 
 <h2>
-    <span>Ingresso</span>
+    <span>I. Esposizione del Santissimo</span>
     <button
         class="song-button"
         data-song-category="Spirito Santo, Comunione, Avvento, Natale, Quaresma, Pasqua"
-        aria-label="Apri i canti di Ingresso">
+        aria-label="Apri i canti di Esposizione">
         🎵
     </button>
 </h2>
 
-<details>
+<p class="rubric" style="color: red; font-style: italic;">
+    Chi guida il momento di preghiera compie l'esposizione e incensa l'Eucaristia, mentre tutti i presenti, stando in piedi, eseguono un canto di esposizione.
+</p>
+
+<details open>
 
 <summary>O Salutaris Hostia</summary>
 
@@ -62,7 +73,7 @@ Amen.
 
 
 <!-- =========================
-     2. SIA LODATO
+     SIA LODATO
 ========================= -->
 
 <section class="prayer-card">
@@ -74,31 +85,25 @@ Sia lodato e ringraziato ogni momento,<br>
 <strong>il Santissimo e divinissimo Sacramento.</strong><br>
 <br>
 Gloria al Padre e al Figlio e allo Spirito Santo <br>
-come era nel principio e ora e sempre nei secoli dei secoli. Amen (3x)<br>
+<strong>Come era nel principio ora e sempre nei secoli dei secoli. Amen (3x)</strong><br>
 </p>
 
 </section>
 	
 	
 <!-- =========================
-     PREGHIERA DI ADORAZIONE (Adorazione - Meditazione)
+     SILENZIO E ADORAZIONE PERSONALE
 ========================= -->
 
 <section class="prayer-card">
 
-<h2>
-    <span>Adorazione - Meditazione</span>
-    <button
-        class="song-button"
-        data-song-category="Comunione, Adorazione, Avvento, Natale, Quaresma, Pasqua"
-        aria-label="Apri i canti di Adorazione e Meditazione">
-        🎵
-    </button>
-</h2>
+<p class="rubric" style="color: red; font-style: italic;">
+    Silenzio per l'adorazione e la preghiera personale.
+</p>
 
 <details>
 
-<summary>Preghiera di Adorazione</summary>
+<summary>Preghiera di Adorazione e Meditazione</summary>
 
 <p class="prayer">
 
@@ -115,7 +120,7 @@ Trasforma la mia vita con la tua presenza. Amen.
 Signore Gesù, sono qui davanti al tuo mistero d'amore.
 Come diceva quel semplice contadino: "Io guardo Te e Tu guardi me".
 Questo mi basta. Il tuo sguardo guarisce le mie ferite.
-Il tuo sguardo mi dice che sei prezioso ai tuoi occhi. (o che sono prezioso ai tuoi occhi)
+Il tuo sguardo mi dice che sei prezioso ai tuoi occhi.
 Rimani con me, e io rimarrò in Te. Amen.
 
 <br><br>
@@ -141,10 +146,39 @@ Riposo nel tuo amore e ti dico con tutto il cuore: Gesù, confido in Te. Amen.
 
 </section>
 
-	
-<details class="prayer-card">	
+
+<!-- =========================
+     II. VESPRI
+========================= -->
+
+<section class="prayer-card">
+
+<p class="rubric" style="color: red; font-style: italic;">
+    Al termine del tempo prestabilito per l'adorazione personale, tutti si alzano in piedi per l'inizio della preghiera dei Vespri.
+</p>
+
+<h2>
+    <span>II. Vespri</span>
+    <button
+        class="song-button"
+        data-song-category="Comunione, Adorazione, Avvento, Natale, Quaresma, Pasqua"
+        aria-label="Apri i canti di Adorazione e Meditazione">
+        🎵
+    </button>
+</h2>
+
+<p class="prayer" style="margin-left: 20px;">
+    Introduzione<br>
+    Inno<br>
+    Salmodia<br>
+    Lettura breve<br>
+    Responsorio breve<br>
+    Cantico della Beata Vergine<br>
+</p>
+
+<details>	
 <summary>Cantico: Magnificat</summary>
-<p class="left">
+<p class="prayer">
 <br>
 L'anima mia magnifica il Signore *<br>
 e il mio spirito esulta in Dio, mio salvatore,<br>
@@ -181,16 +215,29 @@ nei secoli dei secoli. Amen.
 </p>
 </details>
 
+<p class="prayer" style="margin-left: 20px;">
+    Intercessioni<br>
+    Orazione<br>
+</p>
+
+</section>
+
 
 <!-- =========================
-     3. ORAZIONE
+     III. BENEDIZIONE E REPOSIZIONE
 ========================= -->
 
 <section class="prayer-card">
 
+<h2 class="center">III. Benedizione e Reposizione</h2>
+
+<p class="rubric" style="color: red; font-style: italic;">
+    Verso la fine dell'adorazione, il sacerdote o il diacono si accosta all'altare, genuflette e s'inginocchia e si canta il TANTUM ERGO. Frattanto, quando si è fatta l'esposizione con l'ostensorio, il ministro genuflesso incensa il Santissimo Sacramento.
+</p>
+
+<h3>Tantum Ergo</h3>
+
 <p class="prayer">
-<strong>TANTUM ERGO</strong><br>
-<br>
 Tantum ergo sacramentum<br>
 veneremur cernui<br>
 et antiquum documentum<br>
@@ -208,10 +255,16 @@ Procedenti<br>
 ab utroque<br>
 compar sit laudatio.<br>
 Amen.<br>
-<br><br>
 </p>
 
+</section>
+
+
 <section class="prayer-card">
+
+<p class="rubric" style="color: red; font-style: italic;">
+    Poi il ministro si alza e dice:
+</p>
 
 <h2 class="center">Benedictio</h2>
 
@@ -232,21 +285,20 @@ Amen.<br>
 ========================= -->
 <div id="italiano" class="prayer-language">
 <p class="prayer">
-<strong>℣:</strong> Hai dato loro il pane dal cielo.<br>
+<strong>℣:</strong> Hai dato il pane disceso dal cielo.<br>
 <strong>℟:</strong> Che porta in sé ogni dolcezza.
 <br><br>
 <strong>PREGHIAMO</strong>
 <br><br>
 Signore Gesù Cristo,<br>
 che nel mirabile sacramento dell'Eucaristia<br>
-ci hai lasciato il memoriale della tua passione,<br>
+ci hai lasciato il memoriale della tua Pasqua,<br>
 fa' che adoriamo con viva fede<br>
-il santo mistero del tuo Corpo e del tuo Sangue,<br>
-e sperimentiamo in noi i frutti della redenzione.
-<br><br>
+il santo mistero del tuo corpo e del tuo sangue,<br>
+per sentire sempre in noi i benefici della redenzione.<br>
 Tu che vivi e regni nei secoli dei secoli.
 <br><br>
-<strong>Amen.</strong>
+<strong>℟: Amen.</strong>
 </p>
 </div>
 
@@ -274,13 +326,15 @@ in saecula saeculorum.
 </p>
 </div>
 
-</section>
+<p class="rubric" style="color: red; font-style: italic; margin-top: 20px;">
+    Detta l'orazione, il sacerdote o il diacono indossa il velo omerale bianco, prende l'ostensorio o la pisside e fa con il Sacramento il segno di croce sul popolo, senza dire nulla. Un altro sacerdote o ministro stando in ginocchio, incensa il Sacramento. Dopo la benedizione, il sacerdote o il diacono conclude con le seguenti acclamazioni:
+</p>
 
 </section>
 
 
 <!-- =========================
-     4. DIO SIA BENEDETTO (Recessionale)
+     LAUDES DIVINAE (Recessionale)
 ========================= -->
 
 <section class="prayer-card">
@@ -299,19 +353,26 @@ in saecula saeculorum.
 
 <p class="prayer">
 Dio sia benedetto.<br>
-Benedetto il suo santo Nome.<br>
+Benedetto il suo santo nome.<br>
 Benedetto Gesù Cristo, vero Dio e vero uomo.<br>
-Benedetto il Nome di Gesù.<br>
-Benedetto il suo Sacratissimo Cuore.<br>
+Benedetto il nome di Gesù.<br>
+Benedetto il suo sacratissimo Cuore.<br>
 Benedetto il suo preziosissimo Sangue.<br>
 Benedetto Gesù nel santissimo Sacramento dell'altare.<br>
 Benedetto lo Spirito Santo Paraclito.<br>
-Benedetta la grande Madre di Dio, Maria santissima.<br>
-Benedetta la sua santa e immacolata Concezione.<br>
-Benedetta la sua gloriosa Assunzione.<br>
-Benedetto il nome di Maria, Vergine e Madre.<br>
+Benedetta la gran Madre di Dio, Maria santissima.<br>
+Benedetta la sua santa e immacolata concezione.<br>
+Benedetta la sua gloriosa assunzione.<br>
+Benedetto il nome di Maria, vergine e madre.<br>
 Benedetto san Giuseppe, suo castissimo sposo.<br>
 Benedetto Dio nei suoi angeli e nei suoi santi.
+</p>
+
+<p class="rubric" style="color: red; font-style: italic; margin-top: 20px;">
+    Terminata le acclamazioni, il sacerdote o il diacono che ha impartito la benedizione, ripone il Sacramento nel tabernacolo e genuflette.
+</p>
+<p class="rubric" style="color: red; font-style: italic;">
+    Canto finale
 </p>
 
 </section>
